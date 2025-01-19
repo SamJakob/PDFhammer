@@ -1,71 +1,40 @@
 use_relative_paths = True
 
 gclient_gn_args_file = 'build/config/gclient_args.gni'
-gclient_gn_args = [
-  'checkout_android',
-  'checkout_skia',
-]
+gclient_gn_args = []
 
 vars = {
-  # By default, we should check out everything needed to run on the main
-  # pdfium waterfalls. This var can be also be set to 'small', in order to skip
-  # things are not strictly needed to build pdfium for development purposes,
-  # by adding the following line to the .gclient file inside a solutions entry:
-  #      "custom_vars": { "checkout_configuration": "small" },
-  # Similarly, this var can be set to 'minimal' to also skip the Skia and V8
-  # checkouts for the smallest possible checkout, where some features will not
-  # work.
-  'checkout_configuration': 'default',
+  # Skip Skia and v8 for the smallest possible checkout.
+  'checkout_configuration': 'minimal',
 
-  # By default, don't check out android. Will be overridden by gclient
-  # variables.
-  # TODO(crbug.com/875037): Remove this once the bug in gclient is fixed.
+  # No Android.
   'checkout_android': False,
+  'checkout_android_native_support': False,
 
-  # Pull in Android native toolchain dependencies, so we can build ARC++
-  # support libraries.
-  'checkout_android_native_support': 'checkout_android',
+  # No Clang.
+  'checkout_clang_coverage_tools': False,
+  'checkout_clang_tidy': False,
+  'checkout_clangd': False,
+  
+  # No test tools or libraries.
+  'checkout_instrumented_libraries': False,
+  'checkout_testing_corpus': False,
 
-  'checkout_clang_coverage_tools': 'False',
-
-  'checkout_clang_tidy': 'False',
-
-  'checkout_clangd': 'False',
-
-  'checkout_instrumented_libraries': 'checkout_linux and checkout_configuration != "small" and checkout_configuration != "minimal"',
-
-  # Fetch the rust toolchain.
-  #
-  # Use a custom_vars section to enable it:
-  # "custom_vars": {
-  #   "checkout_rust": True,
-  # }
+  # No Rust.
   'checkout_rust': False,
 
-  'checkout_skia': 'checkout_configuration != "minimal"',
-
-  'checkout_testing_corpus': 'checkout_configuration != "small" and checkout_configuration != "minimal"',
-
-  'checkout_v8': 'checkout_configuration != "minimal"',
+  # No Skia
+  'checkout_skia': False,
+  'checkout_v8': False,
 
   # condition to allowlist deps for non-git-source processing.
-  'non_git_source': 'True',
+  'non_git_source': True,
 
   # Fetch configuration files required for the 'use_remoteexec' gn arg
   'download_remoteexec_cfg': False,
-  # RBE instance to use for running remote builds
-  'rbe_instance': Str('projects/rbe-chrome-untrusted/instances/default_instance'),
-  # RBE project to download rewrapper config files for. Only needed if
-  # different from the project used in 'rbe_instance'
-  'rewrapper_cfg_project': Str(''),
-  # reclient CIPD package
-  'reclient_package': 'infra/rbe/client/',
-  # reclient CIPD package version
-  'reclient_version': 're_client_version:0.172.0.3cf60ba5-gomaip',
 
   'chromium_git': 'https://chromium.googlesource.com',
   'pdfium_git': 'https://pdfium.googlesource.com',
-  'skia_git': 'https://skia.googlesource.com',
 
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling abseil
@@ -231,13 +200,9 @@ vars = {
   'zlib_revision': 'b763971bcaa3e4c50a344035837a1dd60d7e6753',
 }
 
-# Only these hosts are allowed for dependencies in this DEPS file.
-# If you need to add a new host, and the new host is not in Chromium's DEPS
-# file's allowed_hosts list, contact Chrome infrastructure team.
 allowed_hosts = [
   'chromium.googlesource.com',
   'pdfium.googlesource.com',
-  'skia.googlesource.com',
 
    # TODO(337061377): Move into a separate allowed gcs bucket list.
   'chromium-browser-clang',
@@ -267,73 +232,14 @@ deps = {
     'condition': 'host_os == "linux"',
   },
 
-  'buildtools/mac': {
-    'packages': [
-      {
-        'package': 'gn/gn/mac-${{arch}}',
-        'version': Var('gn_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'host_os == "mac"',
-  },
-
-  'buildtools/reclient': {
-    'packages': [
-      {
-        'package': Var('reclient_package') + '${{platform}}',
-        'version': Var('reclient_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-  },
-
-  'buildtools/win': {
-    'packages': [
-      {
-        'package': 'gn/gn/windows-amd64',
-        'version': Var('gn_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'host_os == "win"',
-  },
-
-  'testing/corpus': {
-    'url': Var('pdfium_git') + '/pdfium_tests@' + Var('pdfium_tests_revision'),
-    'condition': 'checkout_testing_corpus',
-  },
-
-  'testing/scripts/rust': {
-    'url': Var('chromium_git') + '/chromium/src/testing/scripts/rust.git@' +
-        Var('testing_rust_revision'),
-    'condition': 'checkout_rust',
-  },
-
   'third_party/abseil-cpp':
     Var('chromium_git') + '/chromium/src/third_party/abseil-cpp.git@' +
         Var('abseil_revision'),
-
-  'third_party/android_toolchain/ndk': {
-    'packages': [
-      {
-        'package': 'chromium/third_party/android_toolchain/android_toolchain',
-        'version': Var('android_toolchain_version'),
-      },
-    ],
-    'condition': 'checkout_android_native_support',
-    'dep_type': 'cipd',
-  },
 
   'third_party/catapult': {
     'url': Var('chromium_git') + '/catapult.git@' + Var('catapult_revision'),
     'condition': 'checkout_android',
   },
-
-  'third_party/clang-format/script':
-    Var('chromium_git') +
-        '/external/github.com/llvm/llvm-project/clang/tools/clang-format.git@' +
-        Var('clang_format_revision'),
 
   'third_party/cpu_features/src': {
     'url': Var('chromium_git') +
@@ -411,42 +317,7 @@ deps = {
         'size_bytes': 54162056,
         'generation': 1734710928554494,
         'condition': '(host_os == "linux" or checkout_android) and non_git_source',
-      },
-      {
-        'object_name': 'Mac/clang-llvmorg-20-init-16062-g091448e3-1.tar.xz',
-        'sha256sum': 'a87e78f91148b227e2791606f1d6491e65a3343e488a5d9afb28739e89b892b9',
-        'size_bytes': 49075240,
-        'generation': 1734710930234741,
-        'condition': 'host_os == "mac" and host_cpu == "x64"',
-      },
-      {
-        'object_name': 'Mac/clang-mac-runtime-library-llvmorg-20-init-16062-g091448e3-1.tar.xz',
-        'sha256sum': '6126aa8fb58ac245aa3fcc3da7500aa218943a062a66b10facf9034dff50b837',
-        'size_bytes': 973872,
-        'generation': 1734710937791397,
-        'condition': 'checkout_mac and not host_os == "mac"',
-      },
-      {
-        'object_name': 'Mac_arm64/clang-llvmorg-20-init-16062-g091448e3-1.tar.xz',
-        'sha256sum': '7783806795f320f06abf77f8066e64448a101a1a40695ba6252b9c6315b7fdf2',
-        'size_bytes': 43083188,
-        'generation': 1734710939037981,
-        'condition': 'host_os == "mac" and host_cpu == "arm64"',
-      },
-      {
-        'object_name': 'Win/clang-llvmorg-20-init-16062-g091448e3-1.tar.xz',
-        'sha256sum': '1b197f968fdc7e5a9a4ce3c76f8490d5b35877fca755771510a9e9292275128f',
-        'size_bytes': 46308816,
-        'generation': 1734710948582253,
-        'condition': 'host_os == "win"',
-      },
-      {
-        'object_name': 'Win/clang-win-runtime-library-llvmorg-20-init-16062-g091448e3-1.tar.xz',
-        'sha256sum': 'b0db5463446fdc218f4ae998c6f78d275c274fe023dd2f9d78941c01827dcd46',
-        'size_bytes': 2457348,
-        'generation': 1734710956415612,
-        'condition': 'checkout_win and not host_os == "win"',
-      },
+      }
     ]
   },
 
@@ -471,52 +342,6 @@ deps = {
       }
     ],
     'dep_type': 'cipd',
-  },
-
-  'third_party/rust': {
-    'url': Var('chromium_git') + '/chromium/src/third_party/rust@' +
-        Var('rust_revision'),
-    'condition': 'checkout_rust',
-  },
-
-  'third_party/rust-toolchain': {
-    'dep_type': 'gcs',
-    'bucket': 'chromium-browser-clang',
-    'objects': [
-      {
-        'object_name': 'Linux_x64/rust-toolchain-8a1f8039a7ded79d3d4fe97b110016d89f2b11e2-1-llvmorg-20-init-16062-g091448e3.tar.xz',
-        'sha256sum': 'd95be7651ce879e92b18949e1228775e01352960600ed4ff389815ce8848676d',
-        'size_bytes': 124379804,
-        'generation': 1734710923416010,
-        'condition': 'host_os == "linux" and non_git_source',
-      },
-      {
-        'object_name': 'Mac/rust-toolchain-8a1f8039a7ded79d3d4fe97b110016d89f2b11e2-1-llvmorg-20-init-16062-g091448e3.tar.xz',
-        'sha256sum': '01b25314a55fe0818b1f0b5ea8a8c6a469408618bb20f74f1e744c3d64b6c3eb',
-        'size_bytes': 117354480,
-        'generation': 1734710924611322,
-        'condition': 'host_os == "mac" and host_cpu == "x64"',
-      },
-      {
-        'object_name': 'Mac_arm64/rust-toolchain-8a1f8039a7ded79d3d4fe97b110016d89f2b11e2-1-llvmorg-20-init-16062-g091448e3.tar.xz',
-        'sha256sum': '0bb931bdb9e68573a8ad8298d6ecd50a3cc9d37ba9af492aa386aedab25517e6',
-        'size_bytes': 102273988,
-        'generation': 1734710925809018,
-        'condition': 'host_os == "mac" and host_cpu == "arm64"',
-      },
-      {
-        'object_name': 'Win/rust-toolchain-8a1f8039a7ded79d3d4fe97b110016d89f2b11e2-1-llvmorg-20-init-16062-g091448e3.tar.xz',
-        'sha256sum': 'd709f967e0dcfa8aaba98b98111145e6f1e0b41aa0816c6e46144176b0c7d645',
-        'size_bytes': 176629828,
-        'generation': 1734710927011110,
-        'condition': 'host_os == "win"',
-      },
-    ],
-  },
-
-  'third_party/skia': {
-    'url': Var('skia_git') + '/skia.git@' + Var('skia_revision'),
-    'condition': 'checkout_skia',
   },
 
   'third_party/test_fonts':
@@ -548,61 +373,6 @@ deps = {
     'dep_type': 'cipd',
   },
 
-  'tools/rust': {
-    'url': Var('chromium_git') + '/chromium/src/tools/rust@' +
-        Var('tools_rust_revision'),
-    'condition': 'checkout_rust',
-  },
-
-  'tools/skia_goldctl/linux': {
-    'packages': [
-      {
-        'package': 'skia/tools/goldctl/linux-amd64',
-        'version': Var('goldctl_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'checkout_linux',
-  },
-
-  'tools/skia_goldctl/mac_amd64': {
-    'packages': [
-      {
-        'package': 'skia/tools/goldctl/mac-amd64',
-        'version': Var('goldctl_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'checkout_mac',
-  },
-
-  'tools/skia_goldctl/mac_arm64': {
-    'packages': [
-      {
-        'package': 'skia/tools/goldctl/mac-arm64',
-        'version': Var('goldctl_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'checkout_mac',
-  },
-
-  'tools/skia_goldctl/win': {
-    'packages': [
-      {
-        'package': 'skia/tools/goldctl/windows-amd64',
-        'version': Var('goldctl_version'),
-      }
-    ],
-    'dep_type': 'cipd',
-    'condition': 'checkout_win',
-  },
-
-  'v8': {
-    'url': Var('chromium_git') + '/v8/v8.git@' + Var('v8_revision'),
-    'condition': 'checkout_v8',
-  },
-
 }
 
 recursedeps = [
@@ -616,7 +386,7 @@ include_rules = [
   # Note: public is not here because core cannot depend on public.
   '+build/build_config.h',
   '+constants',
-  '+testing',
+  #'+testing',
 
   # Abseil is allowed by default, but some features are banned. See Chromium's
   # //styleguide/c++/c++-features.md.
@@ -678,47 +448,6 @@ hooks = [
     ]
   },
   {
-    # Update the Windows toolchain if necessary.  Must run before 'clang' below.
-    'name': 'win_toolchain',
-    'pattern': '.',
-    'condition': 'checkout_win',
-    'action': ['python3', 'build/vs_toolchain.py', 'update', '--force'],
-  },
-  {
-    # Update the Mac toolchain if necessary.
-    'name': 'mac_toolchain',
-    'pattern': '.',
-    'condition': 'checkout_mac',
-    'action': ['python3', 'build/mac_toolchain.py'],
-  },
-  # Pull dsymutil binaries using checked-in hashes.
-  {
-    'name': 'dsymutil_mac_arm64',
-    'pattern': '.',
-    'condition': 'host_os == "mac" and host_cpu == "arm64"',
-    'action': [ 'python3',
-                'third_party/depot_tools/download_from_google_storage.py',
-                '--no_resume',
-                '--no_auth',
-                '--bucket', 'chromium-browser-clang',
-                '-s', 'tools/clang/dsymutil/bin/dsymutil.arm64.sha1',
-                '-o', 'tools/clang/dsymutil/bin/dsymutil',
-    ],
-  },
-  {
-    'name': 'dsymutil_mac_x64',
-    'pattern': '.',
-    'condition': 'host_os == "mac" and host_cpu == "x64"',
-    'action': [ 'python3',
-                'third_party/depot_tools/download_from_google_storage.py',
-                '--no_resume',
-                '--no_auth',
-                '--bucket', 'chromium-browser-clang',
-                '-s', 'tools/clang/dsymutil/bin/dsymutil.x64.sha1',
-                '-o', 'tools/clang/dsymutil/bin/dsymutil',
-    ],
-  },
-  {
     'name': 'test_fonts',
     'pattern': '.',
     'action': [ 'python3',
@@ -736,53 +465,5 @@ hooks = [
     'pattern': '.',
     'action': ['python3', 'build/util/lastchange.py',
                '-o', 'build/util/LASTCHANGE'],
-  },
-  # Configure remote exec cfg files
-  {
-    # Use luci_auth if on windows and using chrome-untrusted project
-    'name': 'download_and_configure_reclient_cfgs',
-    'pattern': '.',
-    'condition': 'download_remoteexec_cfg and host_os == "win"',
-    'action': ['python3',
-               'buildtools/reclient_cfgs/configure_reclient_cfgs.py',
-               '--rbe_instance',
-               Var('rbe_instance'),
-               '--reproxy_cfg_template',
-               'reproxy.cfg.template',
-               '--rewrapper_cfg_project',
-               Var('rewrapper_cfg_project'),
-               '--use_luci_auth_credshelper',
-               '--quiet',
-               ],
-  },  {
-    'name': 'download_and_configure_reclient_cfgs',
-    'pattern': '.',
-    'condition': 'download_remoteexec_cfg and not host_os == "win"',
-    'action': ['python3',
-               'buildtools/reclient_cfgs/configure_reclient_cfgs.py',
-               '--rbe_instance',
-               Var('rbe_instance'),
-               '--reproxy_cfg_template',
-               'reproxy.cfg.template',
-               '--rewrapper_cfg_project',
-               Var('rewrapper_cfg_project'),
-               '--quiet',
-               ],
-  },
-  {
-    'name': 'configure_reclient_cfgs',
-    'pattern': '.',
-    'condition': 'not download_remoteexec_cfg',
-    'action': ['python3',
-               'buildtools/reclient_cfgs/configure_reclient_cfgs.py',
-               '--rbe_instance',
-               Var('rbe_instance'),
-               '--reproxy_cfg_template',
-               'reproxy.cfg.template',
-               '--rewrapper_cfg_project',
-               Var('rewrapper_cfg_project'),
-               '--skip_remoteexec_cfg_fetch',
-               '--quiet',
-               ],
   },
 ]
