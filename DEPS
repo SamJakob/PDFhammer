@@ -167,10 +167,6 @@ vars = {
   # and whatever else without interference from each other.
   'resultdb_version': 'git_revision:ebc74d10fa0d64057daa6f128e89f3672eeeec95',
   # Three lines of non-changing comments so that
-  # the commit queue can handle CLs rolling rust
-  # and whatever else without interference from each other.
-  'rust_revision': '08704ba66941c48f570b21152b9ec1745aa7ef52',
-  # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling skia
   # and whatever else without interference from each other.
   'skia_revision': '975788ea90f24519aa8740085378d1a8db05f5d2',
@@ -179,17 +175,9 @@ vars = {
   # and whatever else without interference from each other.
   'test_fonts_revision': '7f51783942943e965cd56facf786544ccfc07713',
   # Three lines of non-changing comments so that
-  # the commit queue can handle CLs rolling testing_rust
-  # and whatever else without interference from each other.
-  'testing_rust_revision': '6712dc59f4a6c5626f391057cded3842700a17eb',
-  # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling tools_memory
   # and whatever else without interference from each other.
   'tools_memory_revision': '8e9b58419b41fe0d9dfe2e870f3164f446a0d7ab',
-  # Three lines of non-changing comments so that
-  # the commit queue can handle CLs rolling tools_rust
-  # and whatever else without interference from each other.
-  'tools_rust_revision': '474e007a4ee99c5f4cff3e7d22511bbc2cb03517',
   # Three lines of non-changing comments so that
   # the commit queue can handle CLs rolling v8
   # and whatever else without interference from each other.

@@ -65,17 +65,6 @@ source_set("test_support") {
     ]
     deps += [ "//base/allocator/partition_allocator/src/partition_alloc" ]
   }
-  if (pdf_enable_v8) {
-    sources += [
-      "v8_initializer.cpp",
-      "v8_initializer.h",
-    ]
-    deps += [
-      "//v8",
-      "//v8:v8_libplatform",
-    ]
-    configs += [ "//v8:external_startup_data" ]
-  }
 }
 
 source_set("path_service") {
@@ -108,28 +97,6 @@ source_set("test_environments") {
     "../:pdfium_strict_config",
     "../:pdfium_noshorten_config",
   ]
-  if (pdf_enable_v8) {
-    sources += [
-      "v8_test_environment.cpp",
-      "v8_test_environment.h",
-    ]
-    deps += [
-      "../fxjs",
-      "//v8",
-      "//v8:v8_libplatform",
-    ]
-    configs += [ "//v8:external_startup_data" ]
-  }
-  if (pdf_enable_xfa) {
-    sources += [
-      "xfa_test_environment.cpp",
-      "xfa_test_environment.h",
-    ]
-    deps += [
-      "../fxjs:gc",
-      "../xfa/fgas/font",
-    ]
-  }
 }
 
 source_set("unit_test_support") {
@@ -203,32 +170,6 @@ source_set("embedder_test_support") {
     "../:pdfium_noshorten_config",
   ]
   visibility = [ "../*" ]
-  if (pdf_enable_v8) {
-    sources += [
-      "external_engine_embedder_test.cpp",
-      "external_engine_embedder_test.h",
-      "js_embedder_test.cpp",
-      "js_embedder_test.h",
-    ]
-    deps += [
-      "../fxjs",
-      "//v8",
-      "//v8:v8_libplatform",
-    ]
-    configs += [ "//v8:external_startup_data" ]
-    if (pdf_enable_xfa) {
-      sources += [
-        "xfa_js_embedder_test.cpp",
-        "xfa_js_embedder_test.h",
-      ]
-      deps += [
-        "../fpdfsdk",
-        "../fpdfsdk/fpdfxfa",
-        "../xfa/fxfa",
-        "../xfa/fxfa/parser",
-      ]
-    }
-  }
 }
 
 config("pdfium_test_config") {
@@ -236,9 +177,6 @@ config("pdfium_test_config") {
   ldflags = []
   defines = []
   include_dirs = [ ".." ]
-  if (pdf_use_skia) {
-    defines += [ "PDF_ENABLE_SKIA" ]
-  }
   if (is_asan) {
     defines += [ "PDF_ENABLE_ASAN" ]
   }
@@ -247,9 +185,6 @@ config("pdfium_test_config") {
   }
   if (enable_callgrind) {
     defines += [ "ENABLE_CALLGRIND" ]
-  }
-  if (build_with_chromium) {
-    defines += [ "BUILD_WITH_CHROMIUM" ]
   }
 }
 
@@ -275,38 +210,11 @@ executable("pdfium_test") {
     "../fpdfsdk",
     "../testing:test_support",
     "../testing/image_diff",
-    "//build/win:default_exe_manifest",
   ]
   configs += [
     ":pdfium_test_config",
     "../:pdfium_common_config",
   ]
-
-  if (is_win) {
-    sources += [
-      "helpers/win32/com_factory.cc",
-      "helpers/win32/com_factory.h",
-    ]
-  }
-
-  if (pdf_enable_v8) {
-    deps += [
-      "//v8:v8_headers",
-      "//v8:v8_libplatform",
-    ]
-    include_dirs = [ "//v8" ]
-    configs += [ "//v8:external_startup_data" ]
-  }
-  if (pdf_use_skia) {
-    deps += [ "//skia" ]
-    if (build_with_chromium) {
-      sources += [
-        "chromium_support/discardable_memory_allocator.cc",
-        "chromium_support/discardable_memory_allocator.h",
-      ]
-      deps += [ "//base/test:test_support" ]
-    }
-  }
 
   if (!build_with_chromium) {
     assert_no_deps = [ "//testing/gtest/*" ]

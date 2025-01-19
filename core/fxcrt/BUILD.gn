@@ -165,23 +165,6 @@ source_set("fxcrt") {
       "fx_folder_posix.cpp",
     ]
   }
-  if (is_win) {
-    sources += [
-      "cfx_fileaccess_windows.cpp",
-      "cfx_fileaccess_windows.h",
-      "code_point_view.cpp",
-      "fx_folder_windows.cpp",
-      "win/scoped_select_object.h",
-      "win/win_util.cc",
-      "win/win_util.h",
-    ]
-  }
-  if (pdf_enable_xfa) {
-    sources += [
-      "cfx_memorystream.cpp",
-      "cfx_memorystream.h",
-    ]
-  }
 }
 
 source_set("test_support") {
@@ -258,6 +241,7 @@ pdfium_unittest_source_set("unittests") {
     "xml/cfx_xmlparser_unittest.cpp",
     "xml/cfx_xmltext_unittest.cpp",
     "zip_unittest.cpp",
+    "cfx_memorystream_unittest.cpp"
   ]
   deps = [
     ":test_support",
@@ -266,9 +250,5 @@ pdfium_unittest_source_set("unittests") {
   pdfium_root_dir = "../../"
   if (pdf_use_partition_alloc) {
     deps += [ "//base/allocator/partition_allocator/src/partition_alloc" ]
-  }
-  if (pdf_enable_xfa) {
-    sources += [ "cfx_memorystream_unittest.cpp" ]
-    deps += [ "../fpdfapi/parser" ]
   }
 }
