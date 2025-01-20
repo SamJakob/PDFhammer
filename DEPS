@@ -224,11 +224,6 @@ deps = {
     Var('chromium_git') + '/chromium/src/third_party/abseil-cpp.git@' +
         Var('abseil_revision'),
 
-  'third_party/catapult': {
-    'url': Var('chromium_git') + '/catapult.git@' + Var('catapult_revision'),
-    'condition': 'checkout_android',
-  },
-
   'third_party/cpu_features/src': {
     'url': Var('chromium_git') +
         '/external/github.com/google/cpu_features.git@' +
@@ -263,29 +258,9 @@ deps = {
   'third_party/icu':
     Var('chromium_git') + '/chromium/deps/icu.git@' + Var('icu_revision'),
 
-  'third_party/instrumented_libs':
-    Var('chromium_git') +
-        '/chromium/third_party/instrumented_libraries.git@' +
-        Var('instrumented_lib_revision'),
-
   'third_party/jinja2':
     Var('chromium_git') + '/chromium/src/third_party/jinja2.git@' +
         Var('jinja2_revision'),
-
-  'third_party/libc++/src':
-    Var('chromium_git') +
-        '/external/github.com/llvm/llvm-project/libcxx.git@' +
-        Var('libcxx_revision'),
-
-  'third_party/libc++abi/src':
-    Var('chromium_git') +
-        '/external/github.com/llvm/llvm-project/libcxxabi.git@' +
-        Var('libcxxabi_revision'),
-
-  'third_party/libunwind/src':
-    Var('chromium_git') +
-        '/external/github.com/llvm/llvm-project/libunwind.git@' +
-        Var('libunwind_revision'),
 
   'third_party/libjpeg_turbo':
     Var('chromium_git') + '/chromium/deps/libjpeg_turbo.git@' +
@@ -294,24 +269,6 @@ deps = {
   'third_party/libpng':
     Var('chromium_git') + '/chromium/src/third_party/libpng.git@' +
         Var('libpng_revision'),
-
-  'third_party/llvm-build/Release+Asserts': {
-    'dep_type': 'gcs',
-    'bucket': 'chromium-browser-clang',
-    'objects': [
-      {
-        'object_name': 'Linux_x64/clang-llvmorg-20-init-16062-g091448e3-1.tar.xz',
-        'sha256sum': '312f81ba0a77fb66f077f4af105fed1ae3f7068c63127b79c560336befd7e957',
-        'size_bytes': 54162056,
-        'generation': 1734710928554494,
-        'condition': '(host_os == "linux" or checkout_android) and non_git_source',
-      }
-    ]
-  },
-
-  'third_party/llvm-libc/src':
-    Var('chromium_git') + '/external/github.com/llvm/llvm-project/libc.git@' +
-        Var('llvm_libc_revision'),
 
   'third_party/markupsafe':
     Var('chromium_git') + '/chromium/src/third_party/markupsafe.git@' +

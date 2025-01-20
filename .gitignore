@@ -34,7 +34,6 @@
 /third_party/skia
 /third_party/test_fonts
 /third_party/zlib
-/tools/clang
 /tools/code_coverage
 /tools/memory
 /tools/resultdb
