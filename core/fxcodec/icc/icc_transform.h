@@ -14,11 +14,7 @@
 #include "core/fxcodec/fx_codec_def.h"
 #include "core/fxcrt/span.h"
 
-#if defined(USE_SYSTEM_LCMS2)
 #include <lcms2.h>
-#else
-#include "third_party/lcms/include/lcms2.h"
-#endif
 
 namespace fxcodec {
 

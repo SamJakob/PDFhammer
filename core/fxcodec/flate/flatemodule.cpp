@@ -31,12 +31,7 @@
 #include "core/fxcrt/span_util.h"
 #include "core/fxcrt/stl_util.h"
 #include "core/fxge/calculate_pitch.h"
-
-#if defined(USE_SYSTEM_ZLIB)
 #include <zlib.h>
-#else
-#include "third_party/zlib/zlib.h"
-#endif
 
 extern "C" {
 

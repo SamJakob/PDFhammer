@@ -1,3 +1,1 @@
-include_rules = [
-  '+third_party/lcms',
-]
+include_rules = []

@@ -309,21 +309,13 @@ source_set("fx_lcms2") {
 
 if (!build_with_chromium) {
   declare_args() {
-    # Uses system libjpeg. If true, overrides use_libjpeg_turbo.
-    use_system_libjpeg = false
-
-    # Uses libjpeg_turbo as the jpeg implementation. Has no effect if
-    # use_system_libjpeg is set.
-    use_libjpeg_turbo = true
+    # Uses system libjpeg.
+    use_system_libjpeg = true
   }
 
   config("system_libjpeg_config") {
     libs = [ "jpeg" ]
     defines = [ "USE_SYSTEM_LIBJPEG" ]
-  }
-
-  config("libjpeg_turbo_config") {
-    defines = [ "USE_LIBJPEG_TURBO=1" ]
   }
 
   # This is a meta target that forwards to the system's libjpeg,
@@ -332,26 +324,16 @@ if (!build_with_chromium) {
   group("jpeg") {
     if (use_system_libjpeg) {
       public_configs = [ ":system_libjpeg_config" ]
-    } else if (use_libjpeg_turbo) {
-      public_deps = [ "//third_party/libjpeg_turbo:libjpeg" ]
-      public_configs = [ ":libjpeg_turbo_config" ]
-    } else {
-      public_deps = [ "//third_party/libjpeg:libjpeg" ]
     }
   }
 }
 
 config("system_zlib_config") {
   libs = [ "z" ]
-  defines = [ "USE_SYSTEM_ZLIB" ]
 }
 
 group("zlib") {
-  if (use_system_zlib) {
-    public_configs = [ ":system_zlib_config" ]
-  } else {
-    public_deps = [ "//third_party/zlib" ]
-  }
+  public_configs = [ ":system_zlib_config" ]
 }
 
 if (use_system_lcms2) {
@@ -363,8 +345,6 @@ if (use_system_lcms2) {
 group("lcms2") {
   if (use_system_lcms2) {
     public_configs = [ ":lcms2_from_pkgconfig" ]
-  } else {
-    public_deps = [ ":fx_lcms2" ]
   }
 }
 
@@ -377,65 +357,7 @@ if (use_system_libopenjpeg2) {
 group("libopenjpeg2") {
   if (use_system_libopenjpeg2) {
     public_configs = [ ":libopenjpeg2_from_pkgconfig" ]
-  } else {
-    public_deps = [ ":fx_libopenjpeg" ]
   }
-}
-
-config("fx_libopenjpeg_warnings") {
-  visibility = [ ":*" ]
-  if (is_clang) {
-    cflags = [
-      # Various files convert MAX_INT to double and similar without casting.
-      "-Wno-implicit-int-float-conversion",
-    ]
-  } else if (is_win && target_cpu == "x86") {
-    cflags = [
-      # Signed/unsigned comparisons.
-      "/wd4018",
-    ]
-  }
-}
-
-source_set("fx_libopenjpeg") {
-  configs -= [ "//build/config/compiler:chromium_code" ]
-  configs += [
-    "//build/config/compiler:no_chromium_code",
-    "//build/config/sanitizers:cfi_icall_generalize_pointers",
-    ":pdfium_third_party_config",
-
-    # Must be after no_chromium_code for warning flags to be ordered correctly.
-    ":fx_libopenjpeg_warnings",
-  ]
-  sources = [
-    "libopenjpeg/bio.c",
-    "libopenjpeg/cio.c",
-    "libopenjpeg/dwt.c",
-    "libopenjpeg/event.c",
-    "libopenjpeg/function_list.c",
-    "libopenjpeg/ht_dec.c",
-    "libopenjpeg/image.c",
-    "libopenjpeg/invert.c",
-    "libopenjpeg/j2k.c",
-    "libopenjpeg/jp2.c",
-    "libopenjpeg/mct.c",
-    "libopenjpeg/mqc.c",
-    "libopenjpeg/openjpeg.c",
-
-    # NOTE: libopenjpeg/opj_clock.c is not used.
-    "libopenjpeg/opj_malloc.cc",
-    "libopenjpeg/opj_malloc.h",
-    "libopenjpeg/pi.c",
-    "libopenjpeg/sparse_array.c",
-    "libopenjpeg/sparse_array.h",
-    "libopenjpeg/t1.c",
-    "libopenjpeg/t1_ht_luts.h",
-    "libopenjpeg/t2.c",
-    "libopenjpeg/tcd.c",
-    "libopenjpeg/tgt.c",
-    "libopenjpeg/thread.c",
-  ]
-  deps = [ "../core/fxcrt" ]
 }
 
 config("system_libpng_config") {
