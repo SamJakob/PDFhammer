@@ -14,6 +14,15 @@ you can build this with what `apt install clang` gives you). The build scripts w
 detect a newer version of Clang and opt-in to any flag(s) supported in that version where they are
 not already supported by Clang 19.
 
+## Dependencies
+
+This list may not yet be complete. You will also need to install all of the build libraries and
+dependencies described in PDFium's documentation.
+
+```
+sudo apt install clang nasm ninja-build lld
+```
+
 ## Building
 
 ```bash
@@ -34,3 +43,19 @@ not already supported by Clang 19.
 ```
 
 - The release can then be found in [out/Release/staging](./out/Release/staging).
+
+## Usage
+
+```yaml
+prefix=/path/to/staging_or_installed_pdfhammer
+lib_dir=${prefix}/libs
+include_dir=${prefix}/include
+
+Name: PDFhammerCore
+Description: PDF parsing library based on Chromium's PDFium.
+Version: 9999
+Requires:
+
+Libs: -L${lib_dir} -lpdfium -lstdc++ -llcms2 -lm -ljpeg -ltiff -lz -lopenjp2 -licuuc
+Cflags: -I${include_dir}
+```

@@ -11,11 +11,7 @@
 
 #include "core/fxcrt/span.h"
 
-#if defined(USE_SYSTEM_LIBOPENJPEG2)
-#include <openjpeg.h>
-#else
-#include "third_party/libopenjpeg/openjpeg.h"
-#endif
+#include <openjpeg-2.5/openjpeg.h>
 
 namespace fxcodec {
 

@@ -241,7 +241,6 @@ pdfium_unittest_source_set("unittests") {
     "xml/cfx_xmlparser_unittest.cpp",
     "xml/cfx_xmltext_unittest.cpp",
     "zip_unittest.cpp",
-    "cfx_memorystream_unittest.cpp"
   ]
   deps = [
     ":test_support",

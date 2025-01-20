@@ -3,7 +3,6 @@
 # found in the LICENSE file.
 
 import("//build/toolchain/concurrent_links.gni")
-import("//build/toolchain/rbe.gni")
 
 declare_args() {
   # Pool for non remote tasks.
@@ -11,7 +10,7 @@ declare_args() {
 }
 
 if (current_toolchain == default_toolchain) {
-  if (action_pool_depth == -1 || use_remoteexec) {
+  if (action_pool_depth == -1) {
     action_pool_depth = exec_script("get_cpu_count.py", [], "value")
   }
 

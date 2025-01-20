@@ -2,8 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/toolchain/rbe.gni")
-
 # Defines the configuration of cc wrapper
 # ccache, sccache: c/c++ compiler caches which can greatly reduce recompilation
 #                  times.
@@ -32,6 +30,3 @@ declare_args() {
   # Set to "ccache", "sccache", "icecc" or "distcc".
   cc_wrapper = ""
 }
-
-assert(!use_remoteexec || cc_wrapper == "",
-       "use_remoteexec and cc_wrapper can not be used together.")

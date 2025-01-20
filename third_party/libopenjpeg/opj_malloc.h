@@ -31,34 +31,26 @@
  */
 #ifndef OPJ_MALLOC_H
 #define OPJ_MALLOC_H
-
 #include <stddef.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /**
 @file opj_malloc.h
 @brief Internal functions
-
 The functions in opj_malloc.h are internal utilities used for memory management.
 */
-
 /** @defgroup MISC MISC - Miscellaneous internal functions */
 /*@{*/
-
 /** @name Exported functions */
 /*@{*/
 /* ----------------------------------------------------------------------- */
-
 /**
 Allocate an uninitialized memory block
 @param size Bytes to allocate
 @return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
 */
 void * opj_malloc(size_t size);
-
 /**
 Allocate a memory block with elements initialized to 0
 @param numOfElements  Blocks to allocate
@@ -66,7 +58,6 @@ Allocate a memory block with elements initialized to 0
 @return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
 */
 void * opj_calloc(size_t numOfElements, size_t sizeOfElements);
-
 /**
 Allocate memory aligned to a 16 byte boundary
 @param size Bytes to allocate
@@ -74,14 +65,12 @@ Allocate memory aligned to a 16 byte boundary
 */
 void * opj_aligned_malloc(size_t size);
 void opj_aligned_free(void* ptr);
-
 /**
 Allocate memory aligned to a 32 byte boundary
 @param size Bytes to allocate
 @return Returns a void pointer to the allocated space, or NULL if there is insufficient memory available
 */
 void * opj_aligned_32_malloc(size_t size);
-
 /**
 Reallocate memory blocks.
 @param m Pointer to previously allocated memory block
@@ -89,24 +78,18 @@ Reallocate memory blocks.
 @return Returns a void pointer to the reallocated (and possibly moved) memory block
 */
 void * opj_realloc(void * m, size_t s);
-
 /**
 Deallocates or frees a memory block.
 @param m Previously allocated memory block to be freed
 */
 void opj_free(void * m);
-
 #if defined(__GNUC__) && !defined(OPJ_SKIP_POISON)
 #pragma GCC poison malloc calloc realloc free
 #endif
-
 /* ----------------------------------------------------------------------- */
 /*@}*/
-
 /*@}*/
-
 #ifdef __cplusplus
 }  // extern "C"
 #endif
-
 #endif /* OPJ_MALLOC_H */

@@ -12,7 +12,6 @@ import("//build/config/host_byteorder.gni")
 import("//build/config/pch.gni")
 import("//build/config/ui.gni")
 import("//build/config/unwind.gni")
-import("//build/toolchain/rbe.gni")
 import("//build/toolchain/toolchain.gni")
 import("//build_overrides/build.gni")
 
@@ -214,9 +213,6 @@ declare_args() {
       (is_chromeos &&
        (clang_use_default_sample_profile || clang_sample_profile_path != ""))
 }
-
-assert(!(llvm_force_head_revision && use_remoteexec && host_os != "linux"),
-       "rbe with locally built clang only works on linux")
 
 # default_include_dirs ---------------------------------------------------------
 #

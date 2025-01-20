@@ -14,6 +14,7 @@
 #include "core/fxcrt/fx_memory.h"
 #include "core/fxcrt/stl_util.h"
 #include "testing/gtest/include/gtest/gtest.h"
+
 #include "third_party/libopenjpeg/opj_malloc.h"
 
 namespace fxcodec {

@@ -11,7 +11,7 @@ if [ ! -d out/Release ]; then
     mkdir -p out/Release
 fi
 
-if [ ! -f out/Release/args.gn ]; then
+if [ ! -f out/Release/args.gn ] || [ ! -f out/Release/build.ninja ]; then
     # Initialize it with an empty set of arguments.
     gn gen out/Release
 else
