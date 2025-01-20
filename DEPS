@@ -293,10 +293,6 @@ deps = {
     Var('chromium_git') + '/chromium/src/third_party/test_fonts.git@' +
         Var('test_fonts_revision'),
 
-  'third_party/zlib':
-    Var('chromium_git') + '/chromium/src/third_party/zlib.git@' +
-        Var('zlib_revision'),
-
   'tools/clang':
     Var('chromium_git') + '/chromium/src/tools/clang@' + Var('clang_revision'),
 
