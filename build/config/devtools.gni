@@ -1,0 +1,13 @@
+# Copyright 2021 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/chrome_build.gni")
+import("//build_overrides/build.gni")
+
+declare_args() {
+  # DevTools is building a standalone version
+  devtools_location = ""
+  devtools_root_location = ""
+  devtools_grd_location = ""
+}

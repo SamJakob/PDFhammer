@@ -1,0 +1,20 @@
+# Copyright 2018 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+import("//build/config/linux/pkg_config.gni")
+
+assert(is_linux || is_chromeos)
+
+declare_args() {
+  # Controls whether the build should use the version of libdrm library shipped
+  # with the system. In release builds of Chrome OS we use the system version.
+  # Some Chromecast devices use this as well.
+  use_system_libdrm = false
+}
+
+group("libdrm") {
+  public_deps = [ "//third_party/libdrm" ]
+}
+config("libdrm_exynos_include_config") {
+  include_dirs = [ "//third_party/libdrm/src/exynos" ]
+}

@@ -1,0 +1,37 @@
+# Copyright 2014 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/toolchain/toolchain.gni")
+
+default_clang_base_path = "/usr"
+
+declare_args() {
+  # Indicates if the build should use the Chrome-specific plugins for enforcing
+  # coding guidelines, etc. Only used when compiling with Chrome's Clang, not
+  # Chrome OS's.
+  clang_use_chrome_plugins = false
+
+  # Use this instead of clang_use_chrome_plugins to enable just the raw-ptr-plugin.
+  clang_use_raw_ptr_plugin = false
+
+  enable_check_raw_ptr_fields = false
+
+  # TODO(crbug.com/40268473): Merge with enable_check_raw_ptr_fields once both
+  # checks are activated on the same set of platforms.
+  enable_check_raw_ref_fields = false
+
+  clang_base_path = default_clang_base_path
+
+  # Specifies whether or not bitcode should be embedded during compilation.
+  # This is used for creating a MLGO corpus from Chromium in the non-ThinLTO case.
+  clang_embed_bitcode = false
+
+  # Set to true to enable output of ThinLTO index and import files used for
+  # creating a Chromium MLGO corpus in the ThinLTO case.
+  lld_emit_indexes_and_imports = false
+}
+
+# We don't really need to collect a corpus for the host tools, just for the target.
+lld_emit_indexes_and_imports =
+    lld_emit_indexes_and_imports && is_a_target_toolchain
